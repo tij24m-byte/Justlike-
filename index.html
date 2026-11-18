@@ -1,1 +1,63 @@
-github.com/tij24m-byte/Justlike-/settings/pages
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Justlike - فقط مثل</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:#f0f2f5;color:#111}
+header{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;box-shadow:0 1px 8px #0001;z-index:10}
+header b{font-size:22px}header b span{color:#ff2d55}
+header button{background:#111;color:#fff;border:0;padding:8px 14px;border-radius:20px}
+.wrap{max-width:520px;margin:auto;padding:12px}
+.card{background:#fff;border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:0 2px 10px #0001}
+.card .top{display:flex;gap:10px;align-items:center}
+.avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(45deg,#ff2d55,#ff9500);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900}
+.card img{width:100%;border-radius:12px;margin-top:10px}
+.actions{display:flex;gap:8px;margin-top:10px}
+.actions button{flex:1;border:0;padding:10px;border-radius:10px;background:#f0f2f5;font-weight:700}
+.actions button.liked{background:#ffe3ea;color:#ff2d55}
+input,textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;margin-bottom:8px;font-family:inherit}
+#newPostBtn{background:#ff2d55;color:#fff;border:0;padding:12px;border-radius:12px;width:100%;font-weight:800}
+small{color:#888}
+</style>
+</head>
+<body>
+<header><b>Just<span>like</span></b><button onclick="alert('أهلا بيك في Justlike ❤️')">حسابي</button></header>
+<div class="wrap">
+<div class="card">
+<h3 style="margin:0 0 8px">✍️ أنشر شي جديد</h3>
+<input id="name" placeholder="اسمك...">
+<textarea id="text" rows="2" placeholder="اكتب شي جميل..."></textarea>
+<input id="img" placeholder="رابط صورة (اختياري)">
+<button id="newPostBtn" onclick="addPost()">نشر الآن</button>
+</div>
+<div id="feed"></div>
+</div>
+<script>
+let posts = JSON.parse(localStorage.getItem('justlike')||'null') || [
+{name:"تاج",text:"أهلا بيكم في Justlike! أول تطبيق لينا 🔥",img:"https://picsum.photos/600/350?1",likes:24,liked:false,comments:["نوررت ❤️","مبروك"]},
+{name:"سارة",text:"أحلى مكان في القامشلي اليوم 🌿",img:"https://picsum.photos/600/350?2",likes:18,liked:false,comments:[]},
+{name:"عمر",text:"منو جرب التطبيق الجديد؟ عجيب والله!",img:"",likes:12,liked:false,comments:["أنا جربتو رهيب"]}
+];
+function render(){
+let f=document.getElementById('feed'); f.innerHTML='';
+posts.forEach((p,i)=>{
+f.innerHTML+=`<div class="card"><div class="top"><div class="avatar">${p.name[0]}</div><div><b>${p.name}</b><br><small>الآن • Justlike</small></div></div><p>${p.text}</p>${p.img?`<img src="${p.img}">`:''}<div class="actions"><button class="${p.liked?'liked':''}" onclick="like(${i})">❤️ ${p.likes} لايك</button><button onclick="comment(${i})">💬 ${p.comments.length} تعليق</button></div><div>${p.comments.map(c=>`<p style="background:#f0f2f5;padding:8px;border-radius:10px">💬 ${c}</p>`).join('')}</div></div>`;
+});
+localStorage.setItem('justlike',JSON.stringify(posts));
+}
+function like(i){posts[i].liked=!posts[i].liked; posts[i].likes+=posts[i].liked?1:-1; render();}
+function comment(i){let c=prompt('اكتب تعليقك:'); if(c){posts[i].comments.push(c); render();}}
+function addPost(){
+let n=document.getElementById('name').value||'ضيف';
+let t=document.getElementById('text').value; if(!t) return alert('اكتب شي أولاً');
+let im=document.getElementById('img').value;
+posts.unshift({name:n,text:t,img:im,likes:0,liked:false,comments:[]});
+document.getElementById('text').value=''; document.getElementById('img').value='';
+render();
+}
+render();
+</script>
+</body>
+</html>
